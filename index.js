@@ -24,7 +24,11 @@ console.log(process.env);
 
 // Rutas
 app.use('/api/usuarios', require('./routes/usuarios_routes'));
+app.use('/api/hospitales', require('./routes/hospitales_routes'));
+app.use('/api/medicos', require('./routes/medicos_routes'));
+app.use('/api/todo', require('./routes/busquedas_routes'));
 app.use('/api/login', require('./routes/auth_routes'));
+app.use('/api/upload', require('./routes/uploads_routes'));
 
 
 // Levantamos el servidor 

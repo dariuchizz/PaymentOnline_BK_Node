@@ -27,9 +27,7 @@ const validarJWT = (req, res, next) => {
             ok: false,
             msg: 'Token no valido.'
         });
-    }
-
-    
+    }    
 }
 
 module.exports = {
