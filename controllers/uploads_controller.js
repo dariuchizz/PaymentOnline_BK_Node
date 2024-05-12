@@ -9,31 +9,31 @@ const { actualizarImagen } = require("../helpers/actualizar-imagen");
 const fileUpload = ( req, res = response ) => {
 
     const tipo = req.params.tipo;
-    const id = req.params.id;
+    const id   = req.params.id;
 
-    // validar tipo
-    const tiposValidos = ['hospitales', 'medicos', 'usuarios'];
-    if(!tiposValidos.includes(tipo))
-    {
-        res.status(400).json({
+    // Validar tipo
+    const tiposValidos = ['hospitales','medicos','usuarios'];
+    if ( !tiposValidos.includes(tipo) ){
+        return res.status(400).json({
             ok: false,
-            msg: 'No es medico, hospilta y usuario'
+            msg: 'No es un médico, usuario u hospital (tipo)'
         });
     }
 
-    // validar q exista un archivo
+    // Validar que exista un archivo
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).json({
             ok: false,
-            msg: 'No hay ningun archivo'
+            msg: 'No hay ningún archivo'
         });
     }
 
-    // Procesar la imagen
+    // Procesar la imagen...
     const file = req.files.imagen;
-    const nombreCortado = file.name.split('.');
-    const extension = nombreCortado[ nombreCortado.length - 1];
 
+    const nombreCortado = file.name.split('.'); // wolverine.1.3.jpg
+    const extension = nombreCortado[ nombreCortado.length - 1 ];
+    
     // Validar extension
     const extensionesValida = ['png', 'jpg', 'jpeg', 'gif'];
     if(!extensionesValida.includes(extension)){
@@ -45,11 +45,12 @@ const fileUpload = ( req, res = response ) => {
 
     // Generar el nombre del archivo
     const nombreArchivo =  `${ uuidv4() }.${ extension }`;
+    console.log('nombreArchivo: ' + nombreArchivo);
 
     // Path para guardar la imagen
     const path = `./uploads/${ tipo }/${ nombreArchivo }`;
-    console.log(path);
-    
+    console.log('path: ' + path);
+
     // Mover la imagen
     file.mv(path, (err) => {
         if (err)
@@ -83,7 +84,7 @@ const retornaImagen = ( req, res = response ) =>{
     {
         res.sendFile(pathImg);
     }else {
-        const pathImg = path.join(__dirname, `../uploads/no-image.jpg`);
+        const pathImg = path.join(__dirname, `../uploads/no-image.jpeg`);
         res.sendFile(pathImg);
     }    
 }

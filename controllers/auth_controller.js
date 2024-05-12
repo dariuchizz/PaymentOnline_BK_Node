@@ -94,23 +94,29 @@ const googleSignin = async(req, res = response) => {
 }
 
 const renewToken = async (req, res = response) => {
-
-    try {
-        console.log(res);
-        const uid = res.uid;
-
-
+    try 
+    {
+        console.log('Inicia metodo renewToken');
+        const uid = req.uid;
+        
         // generar un token
-        const token = await generarJWT( uid );        
+        const token = await generarJWT( uid );  
+        
+        //Obtener el usuario por UID
+        const usuario = await Usuario.findById( uid );
         
         res.json({
         ok: true,
-        uid,
-        token
+        token,
+        usuario
     })
         
     } catch (error) {
-        
+        console.log(error);
+        res.status(400).json({
+            ok: false,
+            msg: 'Token de google no es correcto.'
+        });
     }    
 }
 

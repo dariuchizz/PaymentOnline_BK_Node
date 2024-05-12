@@ -2,6 +2,7 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/jwt'); 
+const usuario = require('../models/usuario');
 
 const getUsuarios = async(req, res) => {
 
@@ -68,15 +69,14 @@ const crearUsuarios = async(req, res = response) => {
 }
 
 const putUsuarios = async(req, res = response) => {
-    
+
     // Validar TOKEN si es el usuario correcto
 
     const uid = req.params.id;
     try {
         
-        const usuarioDb = await Usuario.findById( uid );
-        if(!usuarioDb)
-        {
+        const usuarioDB = await Usuario.findById( uid );
+        if( !usuarioDB) {
             return res.status(404).json({
                 ok: false,
                 msg: 'No existe el usuario con ese id.'
@@ -84,36 +84,36 @@ const putUsuarios = async(req, res = response) => {
         }
 
         // Actualizar el usuario
-        const { password, google, email, ...campos } = req.body;
-
-        console.log('usuarioDbEmail: ' + usuarioDb.email);
-        console.log('req: ' + email);
-        
-        if(usuarioDb.email === email) {           
-        
+        const { password, google, email, ...campos } = req.body;       
+        if(usuarioDB.email !== email) {  
             const existeEmail = await Usuario.findOne({ email });
-
             console.log('existeEmail: ' + existeEmail);
-
-            campos.email = email;        
-            const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, { new: true } );
-    
-            res.json({
-                ok: true,
-                usuario: usuarioActualizado
-            });
-
-            // if( existeEmail ) {
-            //     return res.status(400).json({
-            //         ok: false,
-            //         msg: 'Ya existe un usuario con ese email.'
-            //     });
-            // }
+            if( existeEmail ) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Ya existe un usuario con ese email.'
+                });
+            }
         }
 
-       
+        if ( !usuarioDB.google ) {
+            campos.email = email;
+        } else if ( usuarioDB.email !== email ) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Usuario de google no pueden cambiar su correo'
+            });
+        }
+        
+        const usuarioActualizado = await Usuario.findByIdAndUpdate( uid, campos, { new: true } );         
 
-    } catch (error) {
+        res.json({
+            ok: true,
+            usuario: usuarioActualizado
+        });            
+    }       
+
+     catch (error) {
         console.log(error);
         res.status(500).json({
             ok: false,
@@ -121,6 +121,7 @@ const putUsuarios = async(req, res = response) => {
         });
     }
 }
+
 
 const deleteUsuarios = async(req, res = response) => {
     
