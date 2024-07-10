@@ -58,7 +58,7 @@ const getDocumentosColeccion = async (req, res = response) => {
             });
         break;
     }
-
+    console.log(data);
     res.json({
         ok: true,
         resultado: data

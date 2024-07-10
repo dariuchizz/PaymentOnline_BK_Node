@@ -6,7 +6,8 @@ const usuario = require('../models/usuario');
 
 const getUsuarios = async(req, res) => {
 
-    const limit = 10;
+    console.log('Método: getUsuarios');
+    const limit = 5;
     const desde = Number(req.query.desde) || 0;
     console.log(desde);
 
