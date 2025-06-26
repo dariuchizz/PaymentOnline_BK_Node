@@ -2,7 +2,7 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const { dbConnection } = require('../PaymentOnline_BK_Node/database/config')
+const { dbConnection } = require('./database/config')
 
 // Crear o inicializa el servidor EXPRESS
 const app = express();
