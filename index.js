@@ -1,6 +1,9 @@
+require('dotenv').config();
+const path = require('path');
+
 // Importamos el servidor
 const express = require('express');
-require('dotenv').config();
+
 const cors = require('cors');
 const { dbConnection } = require('./database/config')
 
@@ -33,6 +36,10 @@ app.use('/api/todo', require('./routes/busquedas_routes'));
 app.use('/api/login', require('./routes/auth_routes'));
 app.use('/api/upload', require('./routes/uploads_routes'));
 
+//lo ultimo
+app.get('*', (req, res) => {
+    res.sendFile( path.resolve( __dirname, 'public/index.html'));
+})
 
 // Levantamos el servidor 
 app.listen(process.env.PORT, () => {
